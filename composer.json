@@ -1,6 +1,8 @@
 {
   "name": "ntuangiang/php-rest",
   "description": "This is api template",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "type": "template",
   "license": "MIT",
   "authors": [
