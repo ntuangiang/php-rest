@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  app:
+    image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    env_file:
+      - docker-compose.stag.env
+    volumes:
+      - ./src:/var/www/html/
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+    labels:
+      - traefik.port=80
+      - traefik.enable=true
+      - traefik.docker.network=traefik_proxy
+      - traefik.frontend.entryPoints=https,http
+      - traefik.frontend.rule=Host:$CI_PROJECT_NAME.$DOMAIN_STAG_URL;PathPrefix:/$URL_CI_COMMIT_REF_SLUG
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external:
+      name: traefik_proxy

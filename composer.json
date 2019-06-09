@@ -1,0 +1,19 @@
+{
+  "name": "ntuangiang/php-rest",
+  "description": "This is api template",
+  "type": "template",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nguyen Tuan Giang",
+      "email": "ntuangiang@outlook.com"
+    }
+  ],
+  "require": {
+    "ntuangiang/php-rest-core": "dev-master"
+  },
+
+  "require-dev": {
+    "phpunit/phpunit": "^8"
+  }
+}
