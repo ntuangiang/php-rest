@@ -6,20 +6,28 @@ MAINTAINER Nguyen Tuan Giang "https://github.com/ntuangiang"
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
-        libpng-dev vim git \
+        libpng-dev \
+        zlib1g-dev \
+        libzip-dev \
+        vim git zsh zip unzip \
     && docker-php-ext-install -j$(nproc) iconv \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd
-    && docker-php-ext-install pdo pdo_mysql
+    && docker-php-ext-configure zip --with-libzip \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 RUN pecl install redis-4.0.1 \
     && pecl install xdebug-2.7.0 \
     && docker-php-ext-enable redis xdebug
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
+    && git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions \
+    && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-RUN composer global require ntuangiang/php-ioc
+COPY .zshrc /root/.zshrc
 
-RUN a2enmod rewrite
+RUN a2enmod rewrite ssl
 
 WORKDIR /var/www/html/
